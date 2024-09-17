@@ -4,11 +4,18 @@ body {
   background: #000;
 }
 
+/* Ensure canvas is behind the message */
 canvas {
   display: block;
   position: absolute;
   top: 0;
   left: 0;
+  width: 100vw;
+  /* Ensure canvas covers the entire viewport */
+  height: 100vh;
+  /* Ensure canvas covers the entire viewport */
+  z-index: 1;
+  /* Set z-index so canvas is behind other elements */
 }
 
 .message {
@@ -17,14 +24,11 @@ canvas {
   left: 50%;
   transform: translate(-50%, -50%);
   color: white;
-  font-family: Inter,
-    system-ui,
-    Avenir,
-    Helvetica,
-    Arial,
-    sans-serif;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-size: 24px;
   text-align: center;
+  z-index: 2;
+  /* Set z-index to ensure message appears on top */
 }
 
 .home-button {
