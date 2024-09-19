@@ -1,6 +1,7 @@
 <script>
     import { onMount } from "svelte";
     import * as THREE from "three";
+    import asteroidTexture from "../assets/asteroid_texture.jpg";
 
     let canvas;
 
@@ -15,6 +16,29 @@
         );
         const renderer = new THREE.WebGLRenderer({ canvas });
         renderer.setSize(window.innerWidth, window.innerHeight);
+
+        // Add lighting
+        const ambientLight = new THREE.AmbientLight(0x404040); // Soft white light
+        scene.add(ambientLight);
+
+        const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+        pointLight.position.set(50, 50, 50);
+        scene.add(pointLight);
+
+        // Load texture for the celestial body
+        const textureLoader = new THREE.TextureLoader();
+        const celestialTexture = textureLoader.load(asteroidTexture); // Adjust path as necessary
+
+        const celestialGeometry = new THREE.SphereGeometry(5, 32, 32);
+        const celestialMaterial = new THREE.MeshBasicMaterial({
+            map: celestialTexture,
+        });
+        const celestialBody = new THREE.Mesh(
+            celestialGeometry,
+            celestialMaterial,
+        );
+        celestialBody.position.set(0, 0, -50);
+        scene.add(celestialBody);
 
         // Adding stars to the scene
         const starGeometry = new THREE.BufferGeometry();
@@ -36,20 +60,12 @@
         const stars = new THREE.Points(starGeometry, starMaterial);
         scene.add(stars);
 
-        // Adding a floating planet
-        const planetGeometry = new THREE.SphereGeometry(5, 32, 32);
-        const planetMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-        const planet = new THREE.Mesh(planetGeometry, planetMaterial);
-        planet.position.set(0, 0, -50);
-        scene.add(planet);
-
         camera.position.z = 100;
 
         // Mouse interaction
         document.addEventListener("mousemove", (event) => {
             const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
             const mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-
             camera.position.x = mouseX * 50;
             camera.position.y = mouseY * 50;
             camera.lookAt(scene.position);
@@ -57,9 +73,7 @@
 
         function animate() {
             requestAnimationFrame(animate);
-
-            planet.rotation.y += 0.01;
-
+            celestialBody.rotation.y += 0.01; // Rotate the Celestial Body
             renderer.render(scene, camera);
         }
         animate();
